@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<description>Example job to get you started. It provides a skeleton for
+		a typical batch application.
+	</description>
+
+	<batch:job id="PoiExcelConverter">
+		<batch:step id="convertDataToExcel">
+			<batch:tasklet transaction-manager="transactionManager">
+				<batch:chunk reader="stockDataReader" writer="stockDataExcelWriter" commit-interval="1000" />
+			</batch:tasklet>
+		</batch:step>
+	</batch:job>
+
+
+	<bean name="stockDataReader"
+		class="org.springframework.batch.item.file.FlatFileItemReader">
+		<property name="resource"
+			value="http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&amp;exchange=nasdaq&amp;render=download" />
+		<property name="lineMapper" ref="stockDataLineMapper" />
+		<property name="linesToSkip" value="1" />
+	</bean>
+
+
+<!--"http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&amp;exchange=nasdaq&amp;render=download" -->
+<!--"file:/data/example/excel/companylist_nyse.csv"  -->
+
+	<bean name="stockDataLineMapper"
+		class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+		<property name="fieldSetMapper" ref="stockDataFieldMapper" />
+		<property name="lineTokenizer" ref="stockDataLineTokenizer" />
+	</bean>
+
+	<bean name="stockDataLineTokenizer"
+		class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer" />
+
+</beans>

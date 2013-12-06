@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<description>Example job to get you started. It provides a skeleton for
+		a typical batch application.
+	</description>
+
+	<batch:job id="TickerPriceConversion">
+		<batch:step id="convertPrice">
+			<batch:tasklet transaction-manager="transactionManager">
+				<batch:chunk reader="tickerReader" processor="tickerPriceProcessor"
+					writer="tickerWriter" commit-interval="10" />
+			</batch:tasklet>
+		</batch:step>
+	</batch:job>
+
+
+	<bean name="tickerReader"
+		class="org.springframework.batch.item.file.FlatFileItemReader">
+		<property name="resource"
+			value="http://finance.yahoo.com/d/quotes.csv?s=XOM+IBM+JNJ+MSFT&amp;f=snd1ol1p2" />
+		<property name="lineMapper" ref="tickerLineMapper" />
+	</bean>
+
+
+	<bean name="tickerLineMapper"
+		class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+		<property name="fieldSetMapper" ref="tickerMapper" />
+		<property name="lineTokenizer" ref="tickerLineTokenizer" />
+	</bean>
+
+	<bean name="tickerLineTokenizer"
+		class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer" />
+
+</beans>
