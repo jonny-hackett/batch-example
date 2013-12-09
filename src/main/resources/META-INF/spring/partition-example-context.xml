@@ -7,9 +7,8 @@
 
 	<batch:job id="InventoryLoader">
 		<batch:step id="partitionedInventoryLoadStep">
-			<batch:partition step="inventoryLoadStep"
-				partitioner="inventoryFilePartitioner">
-				<batch:handler grid-size="2" task-executor="inventoryLoadTaskExecutor" />
+			<batch:partition step="inventoryLoadStep" partitioner="inventoryFilePartitioner">
+				<batch:handler grid-size="10" task-executor="inventoryLoadTaskExecutor" />
 			</batch:partition>
 		</batch:step>
 	</batch:job>
@@ -23,7 +22,7 @@
 
 
 
-	<bean id="inventoryFilePartitioner"
+	<bean id="inventoryFilePartitioner" 
 		class="com.keyhole.example.partition.MultiFileResourcePartitioner"
 		scope="step">
 		<property name="inboundDir" value="/data/inbound" />
@@ -34,8 +33,6 @@
 		<property name="corePoolSize" value="10" />
 		<property name="maxPoolSize" value="10" />
 		<property name="allowCoreThreadTimeOut" value="true" />
-		<property name="threadNamePrefix" value="inventoryLoadPartion" />
-		<property name="threadGroupName" value="inventoryLoad" />
 	</bean>
 
 	<bean name="inventoryLoadReader" scope="step"
@@ -44,10 +41,6 @@
 		<property name="lineMapper" ref="inventoryLineMapper" />
 		<property name="linesToSkip" value="1" />
 	</bean>
-
-
-	<!--"http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&amp;exchange=nasdaq&amp;render=download" -->
-	<!--"file:/data/example/excel/companylist_nyse.csv" -->
 
 	<bean name="inventoryLineMapper"
 		class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
