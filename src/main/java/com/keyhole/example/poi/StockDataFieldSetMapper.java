@@ -22,7 +22,7 @@ public class StockDataFieldSetMapper implements FieldSetMapper<StockData> {
 			data.setLastSale(new BigDecimal(lastSaleVal));
 		}
 		
-		data.setMarketCap(fieldSet.readBigDecimal(3));
+		data.setMarketCap(fieldSet.readString(3));
 		data.setAdrTso(fieldSet.readString(4));
 		data.setIpoYear(fieldSet.readString(5));
 		data.setSector(fieldSet.readString(6));

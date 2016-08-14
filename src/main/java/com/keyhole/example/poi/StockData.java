@@ -12,13 +12,12 @@ public class StockData implements Serializable {
 	private String symbol;
 	private String name;
 	private BigDecimal lastSale;
-	private BigDecimal marketCap;
+	private String marketCap;
 	private String adrTso;
 	private String ipoYear;
 	private String sector;
 	private String industry;
 	private String summaryUrl;
-
 
 	public String getSymbol() {
 		return symbol;
@@ -44,11 +43,11 @@ public class StockData implements Serializable {
 		this.lastSale = lastSale;
 	}
 
-	public BigDecimal getMarketCap() {
+	public String getMarketCap() {
 		return marketCap;
 	}
 
-	public void setMarketCap(BigDecimal marketCap) {
+	public void setMarketCap(String marketCap) {
 		this.marketCap = marketCap;
 	}
 

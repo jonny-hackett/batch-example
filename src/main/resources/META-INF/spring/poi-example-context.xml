@@ -12,7 +12,7 @@
 	<batch:job id="PoiExcelConverter">
 		<batch:step id="convertDataToExcel">
 			<batch:tasklet transaction-manager="transactionManager">
-				<batch:chunk reader="stockDataReader" writer="stockDataExcelWriter" commit-interval="1000" />
+				<batch:chunk reader="stockDataReader" writer="multFormatItemWriter" commit-interval="1000" />
 			</batch:tasklet>
 		</batch:step>
 	</batch:job>
@@ -21,7 +21,7 @@
 	<bean name="stockDataReader"
 		class="org.springframework.batch.item.file.FlatFileItemReader">
 		<property name="resource"
-			value="http://www.nasdaq.com/screening/companies-by-name.aspx?letter=0&amp;exchange=nasdaq&amp;render=download" />
+			value="classpath:/data/stock/companylist.csv" />
 		<property name="lineMapper" ref="stockDataLineMapper" />
 		<property name="linesToSkip" value="1" />
 	</bean>
@@ -38,5 +38,19 @@
 
 	<bean name="stockDataLineTokenizer"
 		class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer" />
+		
+	<bean name="pipeDelimitedExtractFile" class="org.springframework.batch.item.file.FlatFileItemWriter">
+		<property name="resource" value="file:/data/example/excel/extract-example.txt" />
+		<property name="lineAggregator">
+			<bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+				<property name="delimiter" value="|" />
+				<property name="fieldExtractor">
+					<bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+						<property name="names" value="symbol,name,lastSale" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
 
 </beans>

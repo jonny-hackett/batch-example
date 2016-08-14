@@ -18,17 +18,14 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("stockDataExcelWriter")
-@Scope("step")
 public class StockDataExcelWriter implements ItemWriter<StockData> {
 
 	private static final String FILE_NAME = "/data/example/excel/StockData";
-	private static final String[] HEADERS = { "Symbol", "Name", "Last Sale",
-			"Market Cap", "ADR TSO", "IPO Year", "Sector", "Industry",
-			"Summary URL" };
+	private static final String[] HEADERS = { "Symbol", "Name", "Last Sale", "Market Cap", "ADR TSO", "IPO Year",
+			"Sector", "Industry", "Summary URL" };
 
 	private String outputFilename;
 	private Workbook workbook;
@@ -100,8 +97,7 @@ public class StockDataExcelWriter implements ItemWriter<StockData> {
 	public void beforeStep(StepExecution stepExecution) {
 		System.out.println("Calling beforeStep");
 
-		String dateTime = DateFormatUtils.format(Calendar.getInstance(),
-				"yyyyMMdd_HHmmss");
+		String dateTime = DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd_HHmmss");
 		outputFilename = FILE_NAME + "_" + dateTime + ".xlsx";
 
 		workbook = new SXSSFWorkbook(100);
@@ -132,19 +128,21 @@ public class StockDataExcelWriter implements ItemWriter<StockData> {
 		Sheet sheet = workbook.getSheetAt(0);
 
 		for (StockData data : items) {
-			for (int i = 0; i < 300; i++) {
-				currRow++;
-				Row row = sheet.createRow(currRow);
-				createStringCell(row, data.getSymbol(), 0);
-				createStringCell(row, data.getName(), 1);
-				createNumericCell(row, data.getLastSale().doubleValue(), 2);
-				createNumericCell(row, data.getMarketCap().doubleValue(), 3);
-				createStringCell(row, data.getAdrTso(), 4);
-				createStringCell(row, data.getIpoYear(), 5);
-				createStringCell(row, data.getSector(), 6);
-				createStringCell(row, data.getIndustry(), 7);
-				createStringCell(row, data.getSummaryUrl(), 8);
-			}
+			// commented out for blog article showing multiple format item
+			// writer.
+			// for (int i = 0; i < 300; i++) {
+			currRow++;
+			Row row = sheet.createRow(currRow);
+			createStringCell(row, data.getSymbol(), 0);
+			createStringCell(row, data.getName(), 1);
+			createNumericCell(row, data.getLastSale().doubleValue(), 2);
+			createStringCell(row, data.getMarketCap(), 3);
+			createStringCell(row, data.getAdrTso(), 4);
+			createStringCell(row, data.getIpoYear(), 5);
+			createStringCell(row, data.getSector(), 6);
+			createStringCell(row, data.getIndustry(), 7);
+			createStringCell(row, data.getSummaryUrl(), 8);
+			// }
 		}
 	}
 
